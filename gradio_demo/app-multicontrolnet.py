@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append("./")
 
 from typing import Tuple
@@ -24,7 +25,9 @@ from huggingface_hub import hf_hub_download
 from insightface.app import FaceAnalysis
 
 from style_template import styles
-from pipeline_stable_diffusion_xl_instantid_full import StableDiffusionXLInstantIDPipeline
+from pipeline_stable_diffusion_xl_instantid_full import (
+    StableDiffusionXLInstantIDPipeline,
+)
 from model_util import load_models_xl, get_torch_device, torch_gc
 from controlnet_util import openpose, get_depth_map, get_canny_image
 
@@ -56,9 +59,11 @@ controlnet_identitynet = ControlNetModel.from_pretrained(
 )
 
 # controlnet-pose
-controlnet_pose_model = "thibaud/controlnet-openpose-sdxl-1.0"
-controlnet_canny_model = "diffusers/controlnet-canny-sdxl-1.0"
-controlnet_depth_model = "diffusers/controlnet-depth-sdxl-1.0-small"
+controlnet_pose_model = "/ML-A100/team/mm/gujiasheng/model/controlnet-openpose-sdxl-1.0"
+controlnet_canny_model = "/ML-A100/team/mm/gujiasheng/model/controlnet-canny-sdxl-1.0"
+controlnet_depth_model = (
+    "/ML-A100/team/mm/gujiasheng/model/controlnet-depth-sdxl-1.0-small"
+)
 
 controlnet_pose = ControlNetModel.from_pretrained(
     controlnet_pose_model, torch_dtype=dtype
@@ -125,7 +130,7 @@ def main(pretrained_model_name_or_path="wangqixun/YamerMIX_v8", enable_lcm_arg=F
 
     pipe.load_ip_adapter_instantid(face_adapter)
     # load and disable LCM
-    pipe.load_lora_weights("latent-consistency/lcm-lora-sdxl")
+    pipe.load_lora_weights("/ML-A100/team/mm/gujiasheng/model/lcm-lora-sdxl")
     pipe.disable_lora()
 
     def toggle_lcm_ui(value):
@@ -357,7 +362,12 @@ def main(pretrained_model_name_or_path="wangqixun/YamerMIX_v8", enable_lcm_arg=F
                 f"Unable to detect a face in the image. Please upload a different photo with a clear face."
             )
 
-        face_info = sorted(face_info, key=lambda x:(x['bbox'][2]-x['bbox'][0])*(x['bbox'][3]-x['bbox'][1]))[-1]  # only use the maximum face
+        face_info = sorted(
+            face_info,
+            key=lambda x: (x["bbox"][2] - x["bbox"][0]) * (x["bbox"][3] - x["bbox"][1]),
+        )[
+            -1
+        ]  # only use the maximum face
         face_emb = face_info["embedding"]
         face_kps = draw_kps(convert_from_cv2_to_image(face_image_cv2), face_info["kps"])
         img_controlnet = face_image
@@ -505,7 +515,8 @@ def main(pretrained_model_name_or_path="wangqixun/YamerMIX_v8", enable_lcm_arg=F
 
                 submit = gr.Button("Submit", variant="primary")
                 enable_LCM = gr.Checkbox(
-                    label="Enable Fast Inference with LCM", value=enable_lcm_arg,
+                    label="Enable Fast Inference with LCM",
+                    value=enable_lcm_arg,
                     info="LCM speeds up the inference step, the trade-off is the quality of the generated image. It performs better with portrait face images rather than distant faces",
                 )
                 style = gr.Dropdown(
@@ -531,8 +542,10 @@ def main(pretrained_model_name_or_path="wangqixun/YamerMIX_v8", enable_lcm_arg=F
                 )
                 with gr.Accordion("Controlnet"):
                     controlnet_selection = gr.CheckboxGroup(
-                        ["pose", "canny", "depth"], label="Controlnet", value=["pose"],
-                        info="Use pose for skeleton inference, canny for edge detection, and depth for depth map estimation. You can try all three to control the generation process"
+                        ["pose", "canny", "depth"],
+                        label="Controlnet",
+                        value=["pose"],
+                        info="Use pose for skeleton inference, canny for edge detection, and depth for depth map estimation. You can try all three to control the generation process",
                     )
                     pose_strength = gr.Slider(
                         label="Pose strength",
@@ -596,7 +609,9 @@ def main(pretrained_model_name_or_path="wangqixun/YamerMIX_v8", enable_lcm_arg=F
                         value="EulerDiscreteScheduler",
                     )
                     randomize_seed = gr.Checkbox(label="Randomize seed", value=True)
-                    enhance_face_region = gr.Checkbox(label="Enhance non-face region", value=True)
+                    enhance_face_region = gr.Checkbox(
+                        label="Enhance non-face region", value=True
+                    )
 
             with gr.Column(scale=1):
                 gallery = gr.Image(label="Generated Images")
@@ -654,13 +669,13 @@ def main(pretrained_model_name_or_path="wangqixun/YamerMIX_v8", enable_lcm_arg=F
 
         gr.Markdown(article)
 
-    demo.launch()
+    demo.launch(server_name="0.0.0.0")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--pretrained_model_name_or_path", type=str, default="wangqixun/YamerMIX_v8"
+        "--pretrained_model_name_or_path", type=str, default="/ML-A100/team/mm/gujiasheng/InstantID/checkpoints/YamerMIX_v8"
     )
     parser.add_argument(
         "--enable_LCM", type=bool, default=os.environ.get("ENABLE_LCM", False)

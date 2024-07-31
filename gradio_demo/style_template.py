@@ -2,7 +2,7 @@ style_list = [
     {
         "name": "(No style)",
         "prompt": "{prompt}",
-        "negative_prompt": "",
+        "negative_prompt": "black and white, low contrast, realistic, photo realistic, plain, simple, (nsfw:1.3), ugly, blurry, low quality, hands, political figure, celebrity, bloody,missing body, strange fingers, genitals, teats",
     },
     {
         "name": "Watercolor",

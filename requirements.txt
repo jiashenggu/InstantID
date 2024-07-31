@@ -1,0 +1,10 @@
+opencv-python
+transformers
+accelerate 
+insightface
+diffusers
+fastapi
+uvicorn
+pydantic
+--pre -f https://oneflow-pro.oss-cn-beijing.aliyuncs.com/branch/community/cu118 oneflow
+onediffx

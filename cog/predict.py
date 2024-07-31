@@ -18,7 +18,7 @@ from diffusers.models import ControlNetModel
 
 from insightface.app import FaceAnalysis
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from pipeline_stable_diffusion_xl_instantid import (
     StableDiffusionXLInstantIDPipeline,
     draw_kps,
@@ -26,9 +26,7 @@ from pipeline_stable_diffusion_xl_instantid import (
 
 # for `ip-adaper`, `ControlNetModel`, and `stable-diffusion-xl-base-1.0`
 CHECKPOINTS_CACHE = "./checkpoints"
-CHECKPOINTS_URL = (
-    "https://weights.replicate.delivery/default/InstantID/checkpoints.tar"
-)
+CHECKPOINTS_URL = "https://weights.replicate.delivery/default/InstantID/checkpoints.tar"
 
 # for `models/antelopev2`
 MODELS_CACHE = "./models"
@@ -60,9 +58,9 @@ def resize_img(
         res = np.ones([max_side, max_side, 3], dtype=np.uint8) * 255
         offset_x = (max_side - w_resize_new) // 2
         offset_y = (max_side - h_resize_new) // 2
-        res[
-            offset_y : offset_y + h_resize_new, offset_x : offset_x + w_resize_new
-        ] = np.array(input_image)
+        res[offset_y : offset_y + h_resize_new, offset_x : offset_x + w_resize_new] = (
+            np.array(input_image)
+        )
         input_image = Image.fromarray(res)
     return input_image
 

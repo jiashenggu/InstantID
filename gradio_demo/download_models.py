@@ -22,6 +22,11 @@ hf_hub_download(
     local_dir="./checkpoints",
 )
 # download antelopev2
-gdown.download(url="https://drive.google.com/file/d/18wEUfMNohBJ4K3Ly5wpTejPfDzp-8fI8/view?usp=sharing", output="./models/", quiet=False, fuzzy=True)
+gdown.download(
+    url="https://drive.google.com/file/d/18wEUfMNohBJ4K3Ly5wpTejPfDzp-8fI8/view?usp=sharing",
+    output="./models/",
+    quiet=False,
+    fuzzy=True,
+)
 # unzip antelopev2.zip
 os.system("unzip ./models/antelopev2.zip -d ./models/")
